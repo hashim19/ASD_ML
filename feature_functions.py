@@ -1,8 +1,16 @@
 import numpy as np
+from numpy import log, exp, infty, zeros_like, vstack, zeros, errstate, finfo, sqrt, floor, tile, concatenate, arange, meshgrid, ceil, linspace
+import math
+from scipy.interpolate import interpn
+from scipy.special import logsumexp
+from scipy.signal import lfilter
+from scipy.fft import dct
+from os.path import exists
+from random import sample
 
 from Feature_Library.LFCC_pipeline import lfcc
-from Feature_Library.CQCC.CQT_toolbox_2013.cqt import cqt
-from Feature_Library.CQCC.cqcc import cqcc
+from CQCC.CQT_toolbox_2013.cqt import cqt
+from CQCC.cqcc import cqcc
 
 
 ######################### feature extraction functions for CQCC #######################
@@ -93,5 +101,5 @@ def extract_lfcc(audio_data, sr, num_ceps=20, order_deltas=2, no_Filters=70):
         # return lfccs.ravel()
 
     else:
-        # return lfccs.T
-        return lfccs[:, :2003].T
+        return lfccs.T
+        # return lfccs[:, :2003].T

@@ -1,22 +1,37 @@
 import numpy as np
+from numpy import log, exp, infty, zeros_like, vstack, zeros, errstate, finfo, sqrt, floor, tile, concatenate, arange, meshgrid, ceil, linspace
+import math
 import pandas as pd
+import soundfile as sf
+import os
+import pickle
 
 from feature_functions import extract_cqcc, extract_lfcc
 
 
-def extract_features(file, features, data_label='bonafide', cached=False):
+def extract_features(file, features, data_type='train', data_label='bonafide', feat_root='Features', cached=False):
 
     def get_feats():
+        data, samplerate = sf.read(file)
+
         if features == 'cqcc':
-            data, samplerate = sf.read(file)
-            # cqcc_feat, fmax, fmin = extract_cqcc(data, samplerate)
             return extract_cqcc(data, samplerate)
+
+        if features == 'lfcc':
+            return extract_lfcc(data, samplerate)
+
         else:
             return None
 
     if cached:
 
-        feat_dir = features + '_features' + '/' + data_label
+        if data_type == 'train':
+
+            feat_dir = os.path.join(feat_root, features + '_features', data_type, data_label)
+        
+        else:
+
+            feat_dir = os.path.join(feat_root, features + '_features', data_label)
 
         if not os.path.exists(feat_dir):
             os.makedirs(feat_dir)
@@ -50,6 +65,8 @@ if __name__ == "__main__":
     data_dirs = [db_folder + 'LA/ASVspoof2019_LA_train/flac/']  # [db_folder + 'LA/ASVspoof2019_LA_train/flac/', db_folder + 'LA/ASVspoof2019_LA_dev/flac/']
     protocol_paths = [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt']  # [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt', db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trn.txt']
 
+    Feat_dir = 'features_out'
+
     audio_ext = '.flac'
 
     data_type = 'train'
@@ -70,5 +87,6 @@ if __name__ == "__main__":
             print("{} data size is {}".format(data_label, files.shape))
 
             for nf, file in enumerate(files):
-                Tx = extract_features(data_dirs[k] + file + audio_ext, features=features, data_label=data_label, data_type=data_type, cached=True)
+                Tx = extract_features(data_dirs[k] + file + audio_ext, features=features, data_label=data_label,
+                 data_type=data_type, feat_root=Feat_dir, cached=True)
                 print(Tx.shape)

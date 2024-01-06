@@ -1,3 +1,6 @@
+-e ./Feature_Library/CQCC
 numpy
 pandas
 spafe
+numba
+librosa
