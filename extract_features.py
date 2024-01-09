@@ -6,7 +6,7 @@ import soundfile as sf
 import os
 import pickle
 
-from feature_functions import extract_cqcc, extract_lfcc
+from feature_functions import extract_cqcc, extract_lfcc, extract_mfcc
 
 
 def extract_features(file, features, data_type='train', data_label='bonafide', feat_root='Features', cached=False):
@@ -20,6 +20,9 @@ def extract_features(file, features, data_type='train', data_label='bonafide', f
         if features == 'lfcc':
             return extract_lfcc(data, samplerate)
 
+        if features == 'mfcc': 
+            return extract_mfcc(data, samplerate) 
+
         else:
             return None
 
@@ -31,7 +34,7 @@ def extract_features(file, features, data_type='train', data_label='bonafide', f
         
         else:
 
-            feat_dir = os.path.join(feat_root, features + '_features', data_label)
+            feat_dir = os.path.join(feat_root, features + '_features', data_type)
 
         if not os.path.exists(feat_dir):
             os.makedirs(feat_dir)
@@ -62,8 +65,8 @@ def extract_features(file, features, data_type='train', data_label='bonafide', f
 if __name__ == "__main__":
 
     db_folder = '/home/hashim/PhD/Data/AsvSpoofData_2019/train/'
-    data_dirs = [db_folder + 'LA/ASVspoof2019_LA_train/flac/']  # [db_folder + 'LA/ASVspoof2019_LA_train/flac/', db_folder + 'LA/ASVspoof2019_LA_dev/flac/']
-    protocol_paths = [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt']  # [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt', db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trn.txt']
+    data_dirs = [db_folder + 'LA/ASVspoof2019_LA_eval/flac/']  # [db_folder + 'LA/ASVspoof2019_LA_train/flac/', db_folder + 'LA/ASVspoof2019_LA_dev/flac/'] db_folder + 'ASVspoof2019_LA_eval/flac/'
+    protocol_paths = [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt']  # [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt', db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trn.txt'] 'ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt'
 
     Feat_dir = 'features_out'
 
@@ -73,20 +76,35 @@ if __name__ == "__main__":
 
     data_labels = ['bonafide', 'spoof']
 
-    features = 'cqcc'
+    features = 'mfcc'
 
 
 
     # extract features and save them
     for k, protocol_path in enumerate(protocol_paths):
 
-        for data_label in data_labels:
+        if data_type == 'train':
+
+            for data_label in data_labels:
+
+                df = pd.read_csv(protocol_path, sep=' ', header=None)
+                files = df[df[4] == data_label][1]
+                print("{} data size is {}".format(data_label, files.shape))
+
+                for nf, file in enumerate(files):
+                    Tx = extract_features(data_dirs[k] + file + audio_ext, features=features, data_label=data_label,
+                        data_type=data_type, feat_root=Feat_dir, cached=True)
+                    print(Tx.shape)
+
+        if data_type == 'eval':
 
             df = pd.read_csv(protocol_path, sep=' ', header=None)
-            files = df[df[4] == data_label][1]
-            print("{} data size is {}".format(data_label, files.shape))
+            files = df[1].values
 
             for nf, file in enumerate(files):
-                Tx = extract_features(data_dirs[k] + file + audio_ext, features=features, data_label=data_label,
-                 data_type=data_type, feat_root=Feat_dir, cached=True)
+                Tx = extract_features(data_dirs[k] + file + audio_ext, features=features,
+                    data_type=data_type, feat_root=Feat_dir, cached=True)
                 print(Tx.shape)
+
+
+            

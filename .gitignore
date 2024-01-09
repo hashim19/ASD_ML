@@ -1,4 +1,5 @@
 venv
+features_out
 *.png
 *.egg-info/
 *.egg

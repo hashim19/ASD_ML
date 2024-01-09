@@ -7,6 +7,7 @@ from scipy.signal import lfilter
 from scipy.fft import dct
 from os.path import exists
 from random import sample
+import librosa
 
 from Feature_Library.LFCC_pipeline import lfcc
 from CQCC.CQT_toolbox_2013.cqt import cqt
@@ -103,3 +104,12 @@ def extract_lfcc(audio_data, sr, num_ceps=20, order_deltas=2, no_Filters=70):
     else:
         return lfccs.T
         # return lfccs[:, :2003].T
+
+
+def extract_mfcc(audio_data, sr):
+
+    mfcc = librosa.feature.mfcc(y=audio_data, sr=sr)
+
+    return mfcc.T
+
+
