@@ -5,15 +5,15 @@ from random import sample
 import pandas
 import pickle
 import math
-import h5py
 import numpy as np
 import os
+import logging
 from Asvspoof_dataset import PKL_dataset, open_pkl, gmm_custom_collate
 
 set_logging_level(logging.INFO)
 
 
-def train_gmm(data_label, features, train_keys, train_folders, audio_ext, dict_file, ncomp, init_only=False):
+def train_gmm(data_label, features, train_keys, train_folders, audio_ext, dict_file, ncomp, feat_dir='features', init_only=False):
 
     print("Training GMM for {} data".format(data_label))
 
@@ -21,7 +21,7 @@ def train_gmm(data_label, features, train_keys, train_folders, audio_ext, dict_f
     gmm_save_dir = '_'.join((dict_file, data_label))
 
     # path to the dataset
-    path_to_dataset = os.path.join(features + '_features', data_label)
+    path_to_dataset = os.path.join(feat_dir, features + '_features', 'train', data_label)
 
     # load pickle files
     total_files = os.listdir(path_to_dataset)
@@ -29,7 +29,7 @@ def train_gmm(data_label, features, train_keys, train_folders, audio_ext, dict_f
     # pickle all data into one file
     all_data_pickle_file = path_to_dataset + '.pkl'
 
-    if not os.path.exists(all_data_pickle):
+    if not os.path.exists(all_data_pickle_file):
 
         for i, pkl_file in enumerate(total_files):
 

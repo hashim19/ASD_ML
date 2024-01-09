@@ -65,8 +65,8 @@ def extract_features(file, features, data_type='train', data_label='bonafide', f
 if __name__ == "__main__":
 
     db_folder = '/home/hashim/PhD/Data/AsvSpoofData_2019/train/'
-    data_dirs = [db_folder + 'LA/ASVspoof2019_LA_eval/flac/']  # [db_folder + 'LA/ASVspoof2019_LA_train/flac/', db_folder + 'LA/ASVspoof2019_LA_dev/flac/'] db_folder + 'ASVspoof2019_LA_eval/flac/'
-    protocol_paths = [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt']  # [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt', db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trn.txt'] 'ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt'
+    data_dirs = [db_folder + 'LA/ASVspoof2019_LA_train/flac/']  # [db_folder + 'LA/ASVspoof2019_LA_train/flac/', db_folder + 'LA/ASVspoof2019_LA_dev/flac/'] db_folder + 'ASVspoof2019_LA_eval/flac/'
+    protocol_paths = [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt']  # [db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.train.trn.txt', db_folder + 'LA/ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.dev.trn.txt'] 'ASVspoof2019_LA_cm_protocols/ASVspoof2019.LA.cm.eval.trl.txt'
 
     Feat_dir = 'features_out'
 
@@ -74,9 +74,10 @@ if __name__ == "__main__":
 
     data_type = 'train'
 
-    data_labels = ['bonafide', 'spoof']
+    # data_labels = ['bonafide', 'spoof']
+    data_labels = ['bonafide']
 
-    features = 'mfcc'
+    features = 'cqcc'
 
 
 
